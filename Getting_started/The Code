@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Nov  5 10:31:17 2025
+
+@author: christophermontesdeoca
+"""
+#TO DO
+
+#create a function 
+
+#Create an output that tells the user if the currency abbreviation they input was correct 
+
+#the ability to insert the actual name of the currency as well as the symbol 
+
+# Define the problem you are trying to solve. - Problem being solved is the conversion of currency from one origin currency to a different one
+#How does your program help to solve the problem? - The program will translate any given currency from one to another
+
+#Who will be the users of this program. Detail at least two Use Cases a. Use Case 1 b. Use Case 2"""- Case A would be a user planning out their-
+#travel to another country and that user would like to know how much of that currency they would need to convert to have a supple amount for their trip and to have a general idea. 
+#Case B would be for a user that is at a currency exchange booth, and that user would like to know if they are truly getting their moneys worth of that exchange and to make sure the booth isnt pulling - 
+#a fast one on them.
+
+#What technology is available to solve the problem? Identify the specific APIs and Modules to be used for the program. - The API we will be using for this would be a currency exchange API which translates - 
+#currency that is given to it and will translate it to whatever target currency the user wants.
+
+#Detail the sequence of the program- What is the flow of the program? How does a user use the program. The sequence would be, the user is asked for their native currency for example USD and then they will- 
+#be asked to input the new currency they want
+
+
+
+
+import http.client
+import requests
+
+while True:
+
+    base = input("Please enter your native currency (EX- USD, CAD, EUR...):  ").upper()   
+
+    Response1 = (input(f"The currency you have selected is {base}, is this correct?: ")).lower() 
+    
+
+    if Response1 == ("yes"):
+        break
+        
+    elif Response1 == ("no"): 
+        print("Please try again \n ---------------")  
+        
+    else: 
+        print("Please enter either input yes or no.")  
+    
+while True: 
+    
+    target = input("Please enter the currency you would like to translate to: ").upper()
+        
+    Response2 = (input(f"The currency you have selected to translate is {target}, is that right?:  "))  
+    
+    if Response2 == ("yes"):
+        break
+        
+    elif Response2 == ("no"): 
+        print("Please try again \n ---------------")  
+        
+    else: 
+        print("Please enter either yes or no ")     
+
+
+while True:  
+    try:
+        amount = float(input(f"please enter how much {base} you would like to convert to {target}: ")) 
+        break
+    except ValueError: 
+        print("please enter a valid number please: ")
+        
+        
+        Response3 =(input("The amount you you entered was {amount}, is this right?: ")).lower() 
+    
+    
+    if Response3 == ("yes"):
+        break
+        
+    elif Response3 == ("no"): 
+        print("Please try again \n ---------------")  
+        
+    else: 
+        print("Please enter either yes or no ")    
+        
+
+querystring = {"base": base, "target": target, "amount": amount} 
+
+conn = http.client.HTTPSConnection("exchange-rates7.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "b584caf4bbmshfa91dbc98b0d996p18d32bjsnac2d0472099a",
+    'x-rapidapi-host': "exchange-rates7.p.rapidapi.com"
+}
+
+conn.request("GET", "/codes", headers=headers)  
+
+res = conn.getresponse()
+
+data = res.read()
+
+
+
+
+url = "https://exchange-rates7.p.rapidapi.com/convert"
+
+    
+
+
+headers = {
+	"x-rapidapi-key": "    ",
+	"x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
+}
+
+response = requests.get(url, headers=headers, params=querystring)
+
+
+print(response.json())
+
+
+
+     
+
+
+ 
+        
+    
