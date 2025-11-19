@@ -10,9 +10,9 @@ Team Name: Group 4
 
 3.	Who will be the users of this program. Detail at least two Use Cases
 
-a.	Use Case 1 - ( Case A would be a user planning out their travel to another country, that user would like to know how much of that currency they would need to convert to have a supple amount for their trip and to have a general idea. )
+a.	Use Case 1 - A user planning out their travel to another country, that user would like to know how much of that currency they would need to convert to have a substantial amount for their trip similarly a currency exchange booth could use to it make the currency conversion for travelers more efficient which would minimize calculation mistakes.
 
-b.	Use Case 2 - (  would be for a user that is at a currency exchange booth, and that user would like to know if they are truly getting their moneys worth of that exchange and to make sure the booth isnt pulling anything on them.) 
+b.	Use Case 2 - Someone who needs to find a place and activities to do and the travel would be based on the type of climate in the location.
 
 4.	What technology is available to solve the problem?  Identify the specific APIs and Modules to be used	for the program. - (The API we will be using for this would be a currency exchange API which translates currency that is given to it and will translate it to whatever target currency the user wants.)
 
