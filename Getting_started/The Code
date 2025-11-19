@@ -36,9 +36,10 @@ import requests
 while True:
 
     base = input("Please enter your native currency (EX- USD, CAD, EUR...):  ").upper()   
+    print("")
 
     Response1 = (input(f"The currency you have selected is {base}, is this correct?: ")).lower() 
-    
+    print("")
 
     if Response1 == ("yes"):
         break
@@ -47,14 +48,14 @@ while True:
         print("Please try again \n ---------------")  
         
     else: 
-        print("Please enter either input yes or no.")  
+        print("Please enter either input yes or no. \n")  
     
 while True: 
     
     target = input("Please enter the currency you would like to translate to: ").upper()
-        
+    print(" ")
     Response2 = (input(f"The currency you have selected to translate is {target}, is that right?:  "))  
-    
+    print("")
     if Response2 == ("yes"):
         break
         
@@ -70,7 +71,7 @@ while True:
         amount = float(input(f"please enter how much {base} you would like to convert to {target}: ")) 
         break
     except ValueError: 
-        print("please enter a valid number please: ")
+        print("please enter a valid number please: \n ")
         
         
         Response3 =(input("The amount you you entered was {amount}, is this right?: ")).lower() 
@@ -110,17 +111,26 @@ url = "https://exchange-rates7.p.rapidapi.com/convert"
 
 
 headers = {
-	"x-rapidapi-key": "    ",
+	"x-rapidapi-key": "",
 	"x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
 }
 
 response = requests.get(url, headers=headers, params=querystring)
 
+results = response.json()
 
-print(response.json())
+rate = float(results["convert_result"]["rate"])   
 
 
-
+print("-------------------------------------------------------")
+print(f"base currency is: {base}")
+print(" ")
+print(f"Target is: {target} ")
+print(" ")
+print(f"Conversion rate from {base} to {target} is: {rate}") 
+print(" ")
+calculated_answer = float(amount * rate)
+print(f"{amount} {base} is {calculated_answer} {target}") 
      
 
 
