@@ -1,0 +1,53 @@
+import openmeteo_requests
+
+import pandas as pd
+import requests_cache
+from retry_requests import retry
+
+from geopy.geocoders import Nominatim
+
+def average_temp_from_country_name(country):
+	geolocator = Nominatim(user_agent = "Ramapo_University_Project_2025")
+	location = geolocator.geocode(country)
+	latitude = location.latitude
+	longitude = location.longitude
+
+	cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
+	retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+	openmeteo = openmeteo_requests.Client(session = retry_session)
+
+	url = "https://climate-api.open-meteo.com/v1/climate"
+	params = {
+		"latitude": latitude,
+		"longitude": longitude,
+		"start_date": "2000-01-01",
+		"end_date": "2025-12-31",
+		"models": "CMCC_CM2_VHR4",
+		"temperature_unit": "fahrenheit",
+		"daily": "temperature_2m_mean",
+	}
+
+	responses = openmeteo.weather_api(url, params=params)
+
+	# Process first location. Add a for-loop for multiple locations or weather models
+	response = responses[0]
+
+	# Process daily data. The order of variables needs to be the same as requested.
+	daily = response.Daily()
+	daily_temperature_2m_mean = daily.Variables(0).ValuesAsNumpy()
+
+	daily_data = {"date": pd.date_range(
+		start = pd.to_datetime(daily.Time(), unit = "s", utc = True),
+		end =  pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
+		freq = pd.Timedelta(seconds = daily.Interval()),
+		inclusive = "left"
+	)}
+
+	daily_data["temperature_2m_mean"] = daily_temperature_2m_mean
+
+	daily_dataframe = pd.DataFrame(data = daily_data)
+	mean_temp = daily_dataframe.mean()
+	return mean_temp["temperature_2m_mean"]
+
+if __name__ == '__main__':
+	print(average_temp_from_country_name("Antartica"))
