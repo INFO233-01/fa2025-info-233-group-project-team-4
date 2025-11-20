@@ -28,27 +28,170 @@ Created on Wed Nov  5 10:31:17 2025
 #be asked to input the new currency they want
 
 
-
-
 import http.client
 import requests
+import sys
 
-while True:
+currency_list = { 
+    'USD':"US Dollar", 
+    'ARS':"Argentine Peso",
+    'BBD':"Barbados Dollar",
+    'BSD':"Bahamian Dollar",
+    'PYG':"Paraguat Guarani",
+    'PAB':"Panamanian Balboa",
+    'BRL':"Brazilian Real",
+   "BMD": "Bermudian Dollar",
+    "BOB": "Bolivian Boliviano",
+    "BZD": "Belize Dollar",
+    "XCD": "East Caribbean Dollar",
+    "DOP": "Dominican Peso",
+    "COP": "Colombian Peso",
+    "CRC": "Costa Rican Colon",
+    "CUP": "Cuban Peso",
+    "HTG": "Haitian Gourde",
+    "ANG": "Netherlands Antillian Guilder",
+    "HNL": "Honduran Lempira",
+    "CAD": "Canadian Dollar",
+    "KYD": "Cayman Islands Dollar",
+    "PEN": "Peruvian Sol",
+    "MXN": "Mexican Peso",
+    "NIO": "Nicaraguan Cordoba Oro",
+    "TTD": "Trinidad and Tobago Dollar",
+    "GTQ": "Guatemalan Quetzal",
+    "VES": "Venezuelan Bolivar",
+    "UYU": "Uruguay Peso",
+    "JMD": "Jamaican Dollar",
+    "CLP": "Chilean Peso",
+    "AUD": "Australian Dollar",
+    "MOP": "Macau Pataca",
+    "PKR": "Pakistan Rupee",
+    "PHP": "Philippine Peso",
+    "FJD": "Fiji Dollar",
+    "HKD": "Hong Kong Dollar",
+    "KRW": "Korean Won",
+    "KHR": "Cambodian Riel",
+    "LAK": "Lao Kip",
+    "MYR": "Malaysian Ringgit",
+    "BDT": "Bangladeshi Taka",
+    "MMK": "Myanmar Kyat",
+    "NPR": "Nepalese Rupee",
+    "CNY": "Chinese Yuan Renminbi",
+    "JPY": "Japanese Yen",
+    "SCR": "Seychelles Rupee",
+    "LKR": "Sri Lanka Rupee",
+    "XPF": "CFP Franc",
+    "THB": "Thai Baht",
+    "BND": "Brunei Dollar",
+    "SGD": "Singapore Dollar",
+    "TWD": "Taiwan Dollar",
+    "NZD": "New Zealand Dollar",
+    "INR": "Indian Rupee",
+    "IDR": "Indonesian Rupiah",
+    "VND": "Vietnamese Dong",
+    "ALL": "Albanian Lek",
+    "BYN": "Belarusian Ruble",
+    "BGN": "Bulgarian Lev",
+    "ISK": "Iceland Krona",
+    "PLN": "Polish Zloty",
+    "DKK": "Danish Krone",
+    "RUB": "Russian Ruble",
+    "CZK": "Czech Koruna",
+    "HRK": "Croatian Kuna",
+    "RON": "Romanian Leu",
+    "MKD": "Macedonia Denar",
+    "MDL": "Moldovan Leu",
+    "NOK": "Norwegian Krone",
+    "EUR": "Euro",
+    "SEK": "Swedish Krona",
+    "CHF": "Swiss Franc",
+    "RSD": "Serbian Dinar",
+    "UAH": "Ukraine Hryvnia",
+    "HUF": "Hungarian Forint",
+    "GBP": "British Pound",
+    "AED": "United Arab Emirates Dirham",
+    "OMR": "Omani Rial",
+    "AZN": "Azerbaijani Manat",
+    "BHD": "Bahraini Dinar",
+    "GEL": "Georgian Lari",
+    "KZT": "Kazakhstan Tenge",
+    "KGS": "Kyrgyzstani Som",
+    "QAR": "Qatari Rial",
+    "KWD": "Kuwaiti Dinar",
+    "LBP": "Lebanese Pound",
+    "SAR": "Saudi Riyal",
+    "TRY": "Turkish Lira",
+    "TMT": "Turkmenistan Manat",
+    "UZS": "Uzbekistan Som",
+    "AMD": "Armenian Dram",
+    "YER": "Yemeni Rial",
+    "IQD": "Iraqi Dinar",
+    "IRR": "Iranian Rial",
+    "ILS": "Israeli New Shekel",
+    "JOD": "Jordanian Dinar",
+    "DZD": "Algerian Dinar",
+    "EGP": "Egyptian Pound",
+    "ETB": "Ethiopian Birr",
+    "AOA": "Angolan Kwanza",
+    "BWP": "Botswana Pula",
+    "BIF": "Burundi Franc",
+    "XOF": "CFA BCEAO Franc",
+    "CVE": "Cape Verde Escudo",
+    "GMD": "Gambian Dalasi",
+    "DJF": "Djibouti Franc",
+    "GNF": "Guinea Franc",
+    "GHS": "Ghanaian Cedi",
+    "KES": "Kenyan Shilling",
+    "LSL": "Lesotho Loti",
+    "LYD": "Libyan Dinar",
+    "RWF": "Rwanda Franc",
+    "MWK": "Malawi Kwacha",
+    "MUR": "Mauritius Rupee",
+    "MAD": "Moroccan Dirham",
+    "NAD": "Namibian Dollar",
+    "ZAR": "South African Rand",
+    "NGN": "Nigerian Naira",
+    "SZL": "Swaziland Lilangeni",
+    "SDG": "Sudanese Pound",
+    "SOS": "Somali Shilling",
+    "TZS": "Tanzanian Shilling",
+    "TND": "Tunisian Dinar",
+    "UGX": "Uganda Shilling",
+    "ZMW": "Zambian Kwacha",
+    "XAF": "CFA BEAC Franc",
+    "BAM": "Bosnia and Herzegovina Marka",
+    "SYP": "Syrian Pound" }
 
-    base = input("Please enter your native currency (EX- USD, CAD, EUR...):  ").upper()   
-    print("")
+while True: 
+    
+    user = input("Welcome to the currency exchange program! \n \nPlease select one of the options listed below. \n 1.) Convert Currency. \n 2.) Find an interesting vacation spot. \n 3.) Quit \n ")
+  
+   
+    if user == "3" :
+        print("Have a great day!")
+        sys.exit()
+       
+       
+    elif user == "1": 
+        while True:
 
-    Response1 = (input(f"The currency you have selected is {base}, is this correct?: ")).lower() 
-    print("")
+            base = input("Please enter your native currency (EX- USD, CAD, EUR...):  ").upper()   
+            print("") 
+            break
 
-    if Response1 == ("yes"):
-        break
+        Response1 = (input(f"The currency you have selected is {base}, is this correct?: ")).lower() 
+        print("")
+       
+        if base not in currency_list:
+            print("The currency you have selected is not available try again. \n") 
+           
+        if Response1 == ("yes"):
+            break
+            
+        elif Response1 == ("no"): 
+            print("Please try again \n ---------------")  
         
-    elif Response1 == ("no"): 
-        print("Please try again \n ---------------")  
-        
-    else: 
-        print("Please enter either input yes or no. \n")  
+        else: 
+            print("Please enter either input yes or no. \n")  
     
 while True: 
     
@@ -56,6 +199,10 @@ while True:
     print(" ")
     Response2 = (input(f"The currency you have selected to translate is {target}, is that right?:  "))  
     print("")
+    
+    
+    if target not in currency_list:
+        print("The currency you have selected is not available")
     if Response2 == ("yes"):
         break
         
@@ -74,7 +221,7 @@ while True:
         print("please enter a valid number please: \n ")
         
         
-        Response3 =(input("The amount you you entered was {amount}, is this right?: ")).lower() 
+        Response3 =(input("The amount you you entered was {amount}, is this right?: ")).lower()   #Gives the user a chance to verify the currency they have selected. 
     
     
     if Response3 == ("yes"):
@@ -111,7 +258,7 @@ url = "https://exchange-rates7.p.rapidapi.com/convert"
 
 
 headers = {
-	"x-rapidapi-key": "",
+	"x-rapidapi-key": "1fbd89b6admsh452592d91c1e41cp1ac476jsn4233e9f07bea",
 	"x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
 }
 
@@ -119,21 +266,31 @@ response = requests.get(url, headers=headers, params=querystring)
 
 results = response.json()
 
+
 rate = float(results["convert_result"]["rate"])   
 
 
+
 print("-------------------------------------------------------")
+
 print(f"base currency is: {base}")
+
 print(" ")
+
 print(f"Target is: {target} ")
+
 print(" ")
+
 print(f"Conversion rate from {base} to {target} is: {rate}") 
+
 print(" ")
+
 calculated_answer = float(amount * rate)
+
 print(f"{amount} {base} is {calculated_answer} {target}") 
-     
 
 
+#now just need to filter out if the user types in a variable that is not real in this case using (if mot in )
  
         
     
