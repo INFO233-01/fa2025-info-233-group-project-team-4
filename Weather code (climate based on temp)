@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import random
 
 #need to pip install requests in anaconda prompt so this works 
-#Climate retrieval based on last 30 days of temperatures 
+#Climate retrieval based on last 30 days of temperatures of the countries in our vacation API
 # -----------------------------
 # 1. Full countries list
 # -----------------------------
