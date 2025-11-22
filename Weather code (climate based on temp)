@@ -1,13 +1,47 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov 22 14:37:19 2025
+
+@author: afeak
+"""
+
 import requests
 from datetime import datetime, timedelta
 import random
 
 #need to pip install requests in anaconda prompt so this works 
 #Climate retrieval based on last 30 days of temperatures of the countries in our vacation API
+
+# -----------------------------
+# 0. OpenWeather API (ADDED)
+# -----------------------------
+OPENWEATHER_API_KEY = ""   # <--- PUT YOUR KEY HERE (required for weather description)
+HEADERS = {
+    "User-Agent": "Mozilla/5.0",        # required header so API doesn't block request
+    "Accept": "application/json"
+}
+
+def get_weather_description(lat, lon):
+    """
+    Returns the **current weather description** using OpenWeather API.
+    Example: "clear sky", "light rain", "broken clouds".
+    """
+    url = "https://api.openweathermap.org/data/2.5/weather"
+    params = {
+        "lat": lat,
+        "lon": lon,
+        "appid": OPENWEATHER_API_KEY,
+        "units": "metric"   # request data in Celsius (converted later in the program)
+    }
+    r = requests.get(url, params=params, headers=HEADERS)
+    data = r.json()
+    return data["weather"][0]["description"]
+
+
 # -----------------------------
 # 1. Full countries list
 # -----------------------------
-# List of countries to choose from
+# This list determines ALL possible countries your program may select from.
 countries = [
     "Argentina", "Australia", "Brazil", "Canada", "China", "Egypt", "France", "Germany", "Greece",
     "India", "Indonesia", "Iran", "Iraq", "Ireland", "Italy", "Japan", "Jordan", "Kenya", "Kuwait",
@@ -17,10 +51,12 @@ countries = [
     "United Arab Emirates", "United Kingdom", "United States", "Yemen"
 ]
 
+
 # -----------------------------
 # 2. Approximate latitude & longitude
 # -----------------------------
-# Dictionary mapping countries to approximate lat/lon coordinates
+# Each entry matches the same country name in the list above.
+# These coordinates are REQUIRED for both APIs (Open Meteo & OpenWeather).
 country_coords = {
     "Argentina": (-34.6037, -58.3816),
     "Australia": (-25.2744, 133.7751),
@@ -47,7 +83,7 @@ country_coords = {
     "Morocco": (31.7917, -7.0926),
     "Netherlands": (52.1326, 5.2913),
     "New Zealand": (-40.9006, 174.8860),
-    "NewCountry": (0.0, 0.0),
+    "NewCountry": (0.0, 0.0),          # placeholder coordinates
     "Oman": (21.5126, 55.9233),
     "Palestine": (31.9522, 35.2332),
     "Peru": (-9.1899, -75.0152),
@@ -74,19 +110,10 @@ country_coords = {
 # -----------------------------
 # 3. Functions
 # -----------------------------
-
 def get_historical_weather(lat, lon, start_date, end_date):
     """
-    Fetch historical weather data from Open-Meteo archive API.
-    
-    Parameters:
-        lat (float): Latitude of location
-        lon (float): Longitude of location
-        start_date (str): YYYY-MM-DD start date
-        end_date (str): YYYY-MM-DD end date
-        
-    Returns:
-        JSON data from API
+    Retrieves historical **hourly temperatures** for the last 30 days
+    using the Open-Meteo archive API.
     """
     url = "https://archive-api.open-meteo.com/v1/archive"
     params = {
@@ -94,34 +121,33 @@ def get_historical_weather(lat, lon, start_date, end_date):
         "longitude": lon,
         "start_date": start_date,
         "end_date": end_date,
-        "hourly": ["temperature_2m"],  # Get hourly temperature data
+        "hourly": ["temperature_2m"],   # request hourly temperature
         "timezone": "auto"
     }
     r = requests.get(url, params=params)
-    r.raise_for_status()  # Raise an error if request failed
+    r.raise_for_status()   # will throw an error if API fails
     return r.json()
+
 
 def calculate_average_temperature(hourly_data):
     """
-    Calculate average, min, max temperatures in Fahrenheit.
-    
-    Parameters:
-        hourly_data (dict): Hourly temperature data
-    
-    Returns:
-        tuple(avg_temp, min_temp, max_temp) rounded to 2 decimals
+    Takes the hourly temperature list and:
+    - converts Celsius → Fahrenheit
+    - returns average, min, max temps
     """
     temps = hourly_data.get("temperature_2m", [])
     if not temps:
         return None
-    # Convert Celsius to Fahrenheit
-    temps_f = [t * 9/5 + 32 for t in temps]
+
+    temps_f = [t * 9/5 + 32 for t in temps]  # conversion here
+
     avg_temp = sum(temps_f) / len(temps_f)
     return round(avg_temp, 2), round(min(temps_f), 2), round(max(temps_f), 2)
 
+
 def climate_description(avg_temp):
     """
-    Return a simple climate description based on average temperature.
+    Categorizes the climate based on average °F.
     """
     if avg_temp < 50:
         return "Cold"
@@ -129,38 +155,52 @@ def climate_description(avg_temp):
         return "Mild"
     elif avg_temp < 86:
         return "Warm"
+        # >= 86°F = Hot
     else:
         return "Hot"
+
 
 # -----------------------------
 # 4. Main program
 # -----------------------------
 if __name__ == "__main__":
+    # Define the 30-day date range
     end_date = datetime.utcnow().date()
     start_date = end_date - timedelta(days=30)
 
-    # -----------------------------
-    # THIS LINE PICKS 5 RANDOM COUNTRIES
-    # -----------------------------
-    selected_countries = random.sample(countries, 5)  # <--- This is the line to adjust if you merge with teammate code
+    # Randomly pick 5 countries
+    selected_countries = random.sample(countries, 5)  # <<< CHANGE THIS LINE WHEN PARTS ARE MERGED
+    # ^ change the number 5 or replace the logic depending on the merged program
+
     print("Randomly selected countries:", selected_countries, "\n")
 
-    # Loop through each selected country
     for country in selected_countries:
-        lat, lon = country_coords[country]
+        lat, lon = country_coords[country]  # get coordinates
+
         try:
-            # Fetch weather data
+            # 1. Get the historical temperature data
             data = get_historical_weather(lat, lon, start_date.isoformat(), end_date.isoformat())
             hourly = data.get("hourly", {})
-            
-            # Calculate average, min, max temperatures
+
             result = calculate_average_temperature(hourly)
 
             if result is not None:
                 avg_temp, min_temp, max_temp = result
                 climate = climate_description(avg_temp)
-                print(f"{country}: Avg={avg_temp}°F, Min={min_temp}°F, Max={max_temp}°F, Climate={climate}")
+
+                # -----------------------------
+                # ADD WEATHER DESCRIPTION HERE
+                # -----------------------------
+                try:
+                    description = get_weather_description(lat, lon)  # current weather description
+                except:
+                    description = "Unavailable"
+
+                # Final output for each country
+                print(f"{country}: Avg={avg_temp}°F, Min={min_temp}°F, Max={max_temp}°F, Climate={climate}, Weather='{description}'")
+
             else:
                 print(f"{country}: No temperature data available")
+
         except Exception as e:
             print(f"{country}: Error fetching data ({e})")
