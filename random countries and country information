@@ -1,0 +1,254 @@
+myDict= {"countries": {
+   "Argentina":{
+      "capital":" Buenos Aires",
+      "currency":"Argentine Peso (ARS)",
+      "vacation":"Tango in Buenos Aires and explore the stunning landscapes of Patagonia."
+   },
+   "Australia":{
+      "capital":"Canberra",
+      "currency":"Australian Dollar (AUD)",
+      "vacation":"Visit the Great Barrier Reef"
+   },
+   "Brazil":{
+      "capital":"Bras\u00edlia",
+      "currency":"Brazilian Real (BRL)",
+      "vacation":"Visit Rio de Janeiro"
+   },
+   "Canada":{
+      "capital":"Ottawa",
+      "currency":"Canadian Dollar (CAD)",
+      "vacation":"Visit Niagara Falls"
+   },
+   "China":{
+      "capital":"Beijing",
+      "currency":"Chinese Yuan (CNY)",
+      "vacation":" Explore the Great Wall of China and visit the Forbidden City."
+   },
+   "Egypt":{
+      "capital":"Cairo",
+      "currency":"Egyptian Pound (EGP)",
+      "vacation":"Discover the ancient pyramids and the temples of Luxor."
+   },
+   "France":{
+      "capital":"Paris",
+      "currency":"Euro (EUR)",
+      "vacation":"Visit the Eiffel Tower"
+   },
+   "Germany":{
+      "capital":"Berlin",
+      "currency":"Euro (EUR)",
+      "vacation":"Visit the Reichstag"
+   },
+   "Greece":{
+      "capital":"Athens",
+      "currency":"Euro (EUR)",
+      "vacation":"Visit the Acropolis in Athens and relax on the beautiful Greek islands."
+   },
+   "India":{
+      "capital":"New Delhi",
+      "currency":"Indian Rupee (INR)",
+      "vacation":"Visit the Taj Mahal"
+   },
+   "Indonesia":{
+      "capital":"Jakarta",
+      "currency":"Indonesian Rupiah (IDR)",
+      "vacation":"Visit Balis beaches and temples, explore the jungles of Sumatra, and see the ancient Borobudur Temple in Yogyakarta."
+   },
+   "Ireland":{
+      "capital":"Dublin",
+      "currency":"Euro (EUR)",
+      "vacation":"Experience the vibrant pub culture and visit historic sites like the Cliffs of Moher."
+   },
+   "Italy":{
+      "capital":"Rome",
+      "currency":"Euro (EUR)",
+      "vacation":"Explore historical sites like the Colosseum and taste authentic Italian cuisine."
+   },
+   "Japan":{
+      "capital":"Tokyo",
+      "currency":"Japanese Yen (JPY)",
+      "vacation":"Visit Hiroshima and Nagasaki"
+   },
+   "Jordan":{
+      "capital":"Amman",
+      "currency":"Jordanian Dinar (JOD)",
+      "vacation":"Visit the ancient city of Petra and explore the desert landscapes of Wadi Rum."
+   },
+   "Kenya":{
+      "capital":"Nairobi",
+      "currency":"Kenyan Shilling (KES)",
+      "vacation":"Go on a safari in the Maasai Mara and visit the Great Rift Valley."
+   },
+   "Kuwait":{
+      "capital":"Kuwait City",
+      "currency":"Kuwaiti Dinar (KWD)",
+      "vacation":"Visit the iconic Kuwait Towers and explore the modern architecture of Kuwait City."
+   },
+   "Malaysia":{
+      "capital":" Kuala Lumpur",
+      "currency":"Malaysian Ringgit (MYR)Euro (EUR)",
+      "vacation":"Explore the vibrant street food culture, visit the Petronas Twin Towers, and enjoy the beautiful beaches in Langkawi."
+   },
+   "Maldives":{
+      "capital":"Mal\u00e9",
+      "currency":"Maldivian Rufiyaa (MVR)",
+      "vacation":"Relax on stunning white-sand beaches, go snorkeling or scuba diving in the crystal-clear waters, and stay in overwater bungalows in luxurious resorts."
+   },
+   "Mexico":{
+      "capital":"Mexico City",
+      "currency":" Mexican Peso (MXN)",
+      "vacation":"Enjoy the beaches in Canc\u00fan and explore ancient Mayan ruins."
+   },
+   "Morocco":{
+      "capital":"Rabat",
+      "currency":"Moroccan Dirham (MAD)",
+      "vacation":"Visit the medinas of Marrakech and explore the Sahara Desert."
+   },
+   "Netherlands":{
+      "capital":"Amsterdam",
+      "currency":"Euro (EUR)",
+      "vacation":"Visit the Netherlands in April to May to see the Tulips in bloom"
+   },
+   "New Zealand":{
+      "capital":"Wellington",
+      "currency":"New Zealand Dollar (NZD)",
+      "vacation":"Experience the natural beauty of Milford Sound and go hiking in the Southern Alps."
+   },
+   "Oman":{
+      "capital":"Muscat",
+      "currency":"Omani Rial (OMR)",
+      "vacation":"Visit the Sultan Qaboos Grand Mosque and explore the natural beauty of Wadi Shab."
+   },
+   "Peru":{
+      "capital":"Lima",
+      "currency":"Peruvian Nuevo Sol (PEN)",
+      "vacation":"Discover the ancient city of Machu Picchu and explore the Amazon Rainforest."
+   },
+   "Philippines":{
+      "capital":"Manila",
+      "currency":" Philippine Peso (PHP)",
+      "vacation":"Enjoy the pristine beaches in Palawan, visit the Chocolate Hills in Bohol, and explore the historic sites in Intramuros."
+   },
+   "Qatar":{
+      "capital":" Doha",
+      "currency":"Qatari Riyal (QAR)",
+      "vacation":"Explore the modern skyline of Doha and visit the Museum of Islamic Art."
+   },
+   "Saudi Arabia":{
+      "capital":"Riyadh",
+      "currency":"Saudi Riyal (SAR)",
+      "vacation":"Explore the ancient city of Petra in Jordan and the historic sites of Medina."
+   },
+   "Singapore":{
+      "capital":"Singapore",
+      "currency":"Singapore Dollar (SGD)",
+      "vacation":"Explore the city state's many parks and gardens"
+   },
+   "South Africa":{
+      "capital":"Pretoria (Administrative), Bloemfontein (Judicial), Cape Town (Legislative)",
+      "currency":"South African Rand (ZAR)",
+      "vacation":"Go on a safari in Kruger National Park and visit Table Mountain in Cape Town."
+   },
+   "South Korea":{
+      "capital":"Seoul",
+      "currency":"South Korean Won (KRW)",
+      "vacation":"Explore the palaces and markets in Seoul and visit the Demilitarized Zone (DMZ)."
+   },
+   "Spain":{
+      "capital":"Madrid",
+      "currency":"Euro (EUR)",
+      "vacation":"Experience the vibrant culture of Barcelona and relax on the beaches of Costa del Sol."
+   },
+   "Sweden":{
+      "capital":"Stockholm",
+      "currency":"Swedish Krona (SEK)",
+      "vacation":" Explore the archipelago in Stockholm and experience the Northern Lights in Lapland."
+   },
+   "Switzerland":{
+      "capital":"Bern",
+      "currency":"Swiss Franc (CHF)",
+      "vacation":"Enjoy the Swiss Alps and explore the charming cities like Zurich and Lucerne."
+   },
+   "Syria":{
+      "capital":"Damascus",
+      "currency":"Syrian Pound (SYP)",
+      "vacation":"Explore the historic Old City of Damascus and visit the ancient ruins of Palmyra."
+   },
+   "Thailand":{
+      "capital":"Bangkok",
+      "currency":"Thai Baht (THB)",
+      "vacation":"Experience the vibrant street food culture and visit the temples in Chiang Mai."
+   },
+   "Tunisia":{
+      "capital":"Tunis",
+      "currency":"Tunisian Dinar (TND)",
+      "vacation":"Explore the historic sites in Carthage and relax on the beautiful Mediterranean beaches"
+   },
+   "Turkey":{
+      "capital":"Ankara",
+      "currency":"Turkish Lira (TRY)",
+      "vacation":"Discover the historical sites of Istanbul and explore the unique landscapes of Cappadocia."
+   },
+   "United Arab Emirates":{
+      "capital":"Abu Dhabi",
+      "currency":"UAE Dirham (AED)",
+      "vacation":"Enjoy luxury shopping in Dubai and visit the Sheikh Zayed Grand Mosque."
+   },
+   "United Kingdom":{
+      "capital":"London",
+      "currency":"Pound Sterling (GBP)",
+      "vacation":"Visit Stonehenge"
+   },
+   "United States":{
+      "capital":"Washington, D.C.",
+      "currency":"United States Dollar (USD)",
+      "vacation":"Visit the Grand Canyon"
+   }}}
+randomCountries = [random.choice(list(myDict["countries"].keys()))for _ in range(5)]
+while True:
+    try:
+        import sys
+        print()
+        print(f"Your random countries are 1:{randomCountries[0]}, 2:{randomCountries[1]}, 3:{randomCountries[2]}, 4:{randomCountries[3]}, 5:{randomCountries[4]}")
+        countryChoice=input("Which country would you like to get more information about? Type in the number of the country. If you want a different set of random countries, type new. If you are done, type done.")
+        if countryChoice.lower()=="new":
+            randomCountries = [random.choice(list(myDict["countries"].keys()))for _ in range(5)]
+            continue
+        elif countryChoice.lower()=="done":
+            print()
+            print("Thank you for using this program.")
+            sys.exit()
+        else:
+            while True:
+                countryChoice=randomCountries[int(countryChoice)-1]
+                print()
+                print(f"The country you chose is {countryChoice}. The capital is {myDict['countries'][countryChoice]['capital']}. The currency is {myDict['countries'][countryChoice]['currency']}. If you go to this country, you should {myDict['countries'][countryChoice]['vacation']}.")
+                countryChoice=input("Would you like to pick a different country? If so, type in the number. If you want new random countries, type new. If you are done, type done.")
+                if countryChoice.lower()=="done":
+                    print()
+                    print("Thank you for using this program.")
+                    sys.exit()
+                elif countryChoice.lower()=="new":
+                    randomCountries = [random.choice(list(myDict["countries"].keys()))for _ in range(5)]
+                    break
+                elif int(countryChoice) in range (1,6):
+                    continue
+                else:
+                    continue
+    except ValueError:
+        print()
+        print("Your choice is invalid. Please choose again.")
+        continue
+    except KeyError:
+        print("Your choice is invalid. Please choose again.")
+        print()
+        continue
+    except IndexError:
+        print()
+        print("Your choice is invalid. Please choose again.")
+        continue            
+        
+
+        
+                
+
