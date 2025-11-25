@@ -1,0 +1,158 @@
+import random
+import sys
+import requests
+from datetime import datetime, timedelta
+
+# -------------------------------------------
+# YOUR ORIGINAL COUNTRY DICTIONARY
+# -------------------------------------------
+myDict= {"countries": {
+   "Argentina":{"capital":" Buenos Aires","currency":"Argentine Peso (ARS)","vacation":"Tango in Buenos Aires and explore the stunning landscapes of Patagonia."},
+   "Australia":{"capital":"Canberra","currency":"Australian Dollar (AUD)","vacation":"Visit the Great Barrier Reef"},
+   "Brazil":{"capital":"Brasília","currency":"Brazilian Real (BRL)","vacation":"Visit Rio de Janeiro"},
+   "Canada":{"capital":"Ottawa","currency":"Canadian Dollar (CAD)","vacation":"Visit Niagara Falls"},
+   "China":{"capital":"Beijing","currency":"Chinese Yuan (CNY)","vacation":" Explore the Great Wall of China and visit the Forbidden City."},
+   "Egypt":{"capital":"Cairo","currency":"Egyptian Pound (EGP)","vacation":"Discover the ancient pyramids and the temples of Luxor."},
+   "France":{"capital":"Paris","currency":"Euro (EUR)","vacation":"Visit the Eiffel Tower"},
+   "Germany":{"capital":"Berlin","currency":"Euro (EUR)","vacation":"Visit the Reichstag"},
+   "Greece":{"capital":"Athens","currency":"Euro (EUR)","vacation":"Visit the Acropolis in Athens and relax on the beautiful Greek islands."},
+   "India":{"capital":"New Delhi","currency":"Indian Rupee (INR)","vacation":"Visit the Taj Mahal"},
+   "Indonesia":{"capital":"Jakarta","currency":"Indonesian Rupiah (IDR)","vacation":"Visit Bali’s beaches and temples"},
+   "Ireland":{"capital":"Dublin","currency":"Euro (EUR)","vacation":"Experience the vibrant pub culture"},
+   "Italy":{"capital":"Rome","currency":"Euro (EUR)","vacation":"Explore the Colosseum"},
+   "Japan":{"capital":"Tokyo","currency":"Japanese Yen (JPY)","vacation":"Visit Hiroshima and Nagasaki"},
+   "Jordan":{"capital":"Amman","currency":"Jordanian Dinar (JOD)","vacation":"Visit Petra"},
+   "Kenya":{"capital":"Nairobi","currency":"Kenyan Shilling (KES)","vacation":"Go on safari"},
+   "Kuwait":{"capital":"Kuwait City","currency":"Kuwaiti Dinar (KWD)","vacation":"Visit Kuwait Towers"},
+   "Malaysia":{"capital":" Kuala Lumpur","currency":"Malaysian Ringgit (MYR)","vacation":"Street food + Petronas Towers"},
+   "Maldives":{"capital":"Malé","currency":"Maldivian Rufiyaa (MVR)","vacation":"Snorkel and stay in water villas"},
+   "Mexico":{"capital":"Mexico City","currency":" Mexican Peso (MXN)","vacation":"Beaches + Mayan ruins"},
+   "Morocco":{"capital":"Rabat","currency":"Moroccan Dirham (MAD)","vacation":"Explore Marrakech"},
+   "Netherlands":{"capital":"Amsterdam","currency":"Euro (EUR)","vacation":"See tulips April-May"},
+   "New Zealand":{"capital":"Wellington","currency":"New Zealand Dollar (NZD)","vacation":"Visit Milford Sound"},
+   "Oman":{"capital":"Muscat","currency":"Omani Rial (OMR)","vacation":"Visit Wadi Shab"},
+   "Peru":{"capital":"Lima","currency":"Peruvian Nuevo Sol (PEN)","vacation":"Visit Machu Picchu"},
+   "Philippines":{"capital":"Manila","currency":" Philippine Peso (PHP)","vacation":"Visit Palawan"},
+   "Qatar":{"capital":" Doha","currency":"Qatari Riyal (QAR)","vacation":"Visit Museum of Islamic Art"},
+   "Saudi Arabia":{"capital":"Riyadh","currency":"Saudi Riyal (SAR)","vacation":"Historic Medina"},
+   "Singapore":{"capital":"Singapore","currency":"Singapore Dollar (SGD)","vacation":"Visit gardens + parks"},
+   "South Africa":{"capital":"Pretoria","currency":"South African Rand (ZAR)","vacation":"Safari in Kruger"},
+   "South Korea":{"capital":"Seoul","currency":"South Korean Won (KRW)","vacation":"Visit palaces"},
+   "Spain":{"capital":"Madrid","currency":"Euro (EUR)","vacation":"Visit Barcelona"},
+   "Sweden":{"capital":"Stockholm","currency":"Swedish Krona (SEK)","vacation":"See Northern Lights"},
+   "Switzerland":{"capital":"Bern","currency":"Swiss Franc (CHF)","vacation":"Swiss Alps"},
+   "Syria":{"capital":"Damascus","currency":"Syrian Pound (SYP)","vacation":"Visit Palmyra"},
+   "Thailand":{"capital":"Bangkok","currency":"Thai Baht (THB)","vacation":"Street food + temples"},
+   "Tunisia":{"capital":"Tunis","currency":"Tunisian Dinar (TND)","vacation":"Mediterranean beaches"},
+   "Turkey":{"capital":"Ankara","currency":"Turkish Lira (TRY)","vacation":"Visit Cappadocia"},
+   "United Arab Emirates":{"capital":"Abu Dhabi","currency":"UAE Dirham (AED)","vacation":"Luxury shopping in Dubai"},
+   "United Kingdom":{"capital":"London","currency":"Pound Sterling (GBP)","vacation":"Visit Stonehenge"},
+   "United States":{"capital":"Washington, D.C.","currency":"United States Dollar (USD)","vacation":"Visit Grand Canyon"}
+}}
+
+# -------------------------------------------
+# WEATHER FUNCTIONS (OpenWeather + Open-Meteo)
+# -------------------------------------------
+
+OPENWEATHER_KEY = "PUT YOUR API KEY HERE"
+
+def get_coordinates(country):
+    url = f"http://api.openweathermap.org/geo/1.0/direct?q={country}&limit=1&appid={OPENWEATHER_KEY}"
+    response = requests.get(url).json()
+    if not response:
+        return None, None
+    return response[0]["lat"], response[0]["lon"]
+
+def get_average_temperature(lat, lon):
+    end_date = datetime.today()
+    start_date = end_date - timedelta(days=30)
+
+    url = (
+        f"https://api.open-meteo.com/v1/forecast?"
+        f"latitude={lat}&longitude={lon}&start_date={start_date:%Y-%m-%d}"
+        f"&end_date={end_date:%Y-%m-%d}&daily=temperature_2m_max&timezone=auto"
+    )
+
+    data = requests.get(url).json()
+    temps = data["daily"]["temperature_2m_max"]
+    return round(sum(temps) / len(temps), 2)
+
+# -------------------------------------------
+# RANDOM 5 COUNTRIES (YOUR ORIGINAL LOGIC)
+# -------------------------------------------
+randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
+
+# -------------------------------------------
+# MAIN PROGRAM LOOP
+# -------------------------------------------
+while True:
+    try:
+        print()
+        print(f"Your random countries are 1:{randomCountries[0]}, 2:{randomCountries[1]}, 3:{randomCountries[2]}, 4:{randomCountries[3]}, 5:{randomCountries[4]}")
+        countryChoice = input("Which country would you like more information about? (#, new, info, weather, done): ")
+
+        if countryChoice.lower() == "new":
+            randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
+            continue
+
+        elif countryChoice.lower() == "done":
+            print("\nThank you for using this program.")
+            sys.exit()
+
+        # NEW OPTION: show weather for all 5 countries
+        elif countryChoice.lower() == "weather":
+            print("\nGetting 30-day average temperatures...\n")
+            for c in randomCountries:
+                lat, lon = get_coordinates(c)
+                if lat is None:
+                    print(f"{c}: No data found")
+                    continue
+                avg_temp = get_average_temperature(lat, lon)
+                print(f"{c}: {avg_temp}°F (30-day avg)")
+            print()
+            continue
+
+        # USER SELECTED ONE OF THE 5 COUNTRIES
+        else:
+            while True:
+                countryChoice = randomCountries[int(countryChoice) - 1]
+                print()
+                print(f"The country you chose is {countryChoice}.")
+                print(f"Capital: {myDict['countries'][countryChoice]['capital']}")
+                print(f"Currency: {myDict['countries'][countryChoice]['currency']}")
+                print(f"Vacation Tip: {myDict['countries'][countryChoice]['vacation']}")
+
+                # WEATHER FOR SELECTED COUNTRY
+                lat, lon = get_coordinates(countryChoice)
+                if lat:
+                    temp = get_average_temperature(lat, lon)
+                    print(f"30-Day Avg Temperature: {temp}°F")
+                else:
+                    print("Weather data not available.")
+
+                print()
+                countryChoice = input("Pick another (#), new list (new), weather for all (weather), or done: ")
+
+                if countryChoice.lower() == "done":
+                    print("\nThank you for using this program.")
+                    sys.exit()
+                elif countryChoice.lower() == "new":
+                    randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
+                    break
+                elif countryChoice.lower() == "weather":
+                    for c in randomCountries:
+                        lat, lon = get_coordinates(c)
+                        if lat is None:
+                            print(f"{c}: No data found")
+                            continue
+                        avg = get_average_temperature(lat, lon)
+                        print(f"{c}: {avg}°F")
+                    continue
+                elif int(countryChoice) in range(1,6):
+                    continue
+                else:
+                    continue
+
+    except Exception:
+        print("\nInvalid choice. Try again.")
+        continue
