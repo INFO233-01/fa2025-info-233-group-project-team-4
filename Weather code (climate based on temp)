@@ -46,11 +46,11 @@ def get_weather_description(lat, lon):
 # This list determines ALL possible countries your program may select from.
 countries = [
     "Argentina", "Australia", "Brazil", "Canada", "China", "Egypt", "France", "Germany", "Greece",
-    "India", "Indonesia", "Iran", "Iraq", "Ireland", "Italy", "Japan", "Jordan", "Kenya", "Kuwait",
+    "India", "Indonesia", "Ireland", "Italy", "Japan", "Jordan", "Kenya", "Kuwait",
     "Malaysia", "Maldives", "Mexico", "Morocco", "Netherlands", "New Zealand", "NewCountry", "Oman",
-    "Palestine", "Peru", "Philippines", "Qatar", "Russia", "Saudi Arabia", "Singapore", "South Africa",
+    , "Peru", "Philippines", "Qatar", "Saudi Arabia", "Singapore", "South Africa",
     "South Korea", "Spain", "Sweden", "Switzerland", "Syria", "Thailand", "Tunisia", "Turkey",
-    "United Arab Emirates", "United Kingdom", "United States", "Yemen"
+    "United Arab Emirates", "United Kingdom", "United States", 
 ]
 
 
@@ -71,8 +71,6 @@ country_coords = {
     "Greece": (39.0742, 21.8243),
     "India": (20.5937, 78.9629),
     "Indonesia": (-0.7893, 113.9213),
-    "Iran": (32.4279, 53.6880),
-    "Iraq": (33.2232, 43.6793),
     "Ireland": (53.4129, -8.2439),
     "Italy": (41.8719, 12.5674),
     "Japan": (36.2048, 138.2529),
@@ -87,11 +85,9 @@ country_coords = {
     "New Zealand": (-40.9006, 174.8860),
     "NewCountry": (0.0, 0.0),          # placeholder coordinates
     "Oman": (21.5126, 55.9233),
-    "Palestine": (31.9522, 35.2332),
     "Peru": (-9.1899, -75.0152),
     "Philippines": (12.8797, 121.7740),
     "Qatar": (25.3548, 51.1839),
-    "Russia": (61.5240, 105.3188),
     "Saudi Arabia": (23.8859, 45.0792),
     "Singapore": (1.3521, 103.8198),
     "South Africa": (-30.5595, 22.9375),
@@ -106,7 +102,6 @@ country_coords = {
     "United Arab Emirates": (23.4241, 53.8478),
     "United Kingdom": (55.3781, -3.4360),
     "United States": (39.8283, -98.5795),
-    "Yemen": (15.5527, 48.5164)
 }
 
 # -----------------------------
