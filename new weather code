@@ -3,6 +3,7 @@ import sys
 import requests
 from datetime import datetime, timedelta
 
+#make sure to pip install requests in anaconda code prompt
 # -------------------------------------------
 # COUNTRY DICTIONARY (YOUR ORIGINAL DATASET)
 # Stores each country’s capital, currency, and vacation idea
