@@ -4,7 +4,8 @@ import requests
 from datetime import datetime, timedelta
 
 # -------------------------------------------
-# YOUR ORIGINAL COUNTRY DICTIONARY
+# COUNTRY DICTIONARY (YOUR ORIGINAL DATASET)
+# Stores each country’s capital, currency, and vacation idea
 # -------------------------------------------
 myDict= {"countries": {
    "Argentina":{"capital":" Buenos Aires","currency":"Argentine Peso (ARS)","vacation":"Tango in Buenos Aires and explore the stunning landscapes of Patagonia."},
@@ -54,16 +55,21 @@ myDict= {"countries": {
 # WEATHER FUNCTIONS (OpenWeather + Open-Meteo)
 # -------------------------------------------
 
-OPENWEATHER_KEY = "PUT YOUR API KEY HERE"
+OPENWEATHER_KEY = "PUT YOUR API KEY HERE"   # <-- Insert your real API key here
 
 def get_coordinates(country):
+    """Uses OpenWeather Geo API to convert a country name into latitude and longitude."""
     url = f"http://api.openweathermap.org/geo/1.0/direct?q={country}&limit=1&appid={OPENWEATHER_KEY}"
     response = requests.get(url).json()
+
     if not response:
-        return None, None
+        return None, None  # No coordinates found
+
     return response[0]["lat"], response[0]["lon"]
 
+
 def get_average_temperature(lat, lon):
+    """Uses Open-Meteo API to get the average max temperature over the last 30 days."""
     end_date = datetime.today()
     start_date = end_date - timedelta(days=30)
 
@@ -75,11 +81,14 @@ def get_average_temperature(lat, lon):
 
     data = requests.get(url).json()
     temps = data["daily"]["temperature_2m_max"]
-    return round(sum(temps) / len(temps), 2)
+
+    return round(sum(temps) / len(temps), 2)  # Return average temp rounded to 2 decimals
+
 
 # -------------------------------------------
-# RANDOM 5 COUNTRIES (YOUR ORIGINAL LOGIC)
+# RANDOMLY SELECT 5 COUNTRIES (YOUR ORIGINAL LOGIC)
 # -------------------------------------------
+# Selects 5 random countries every time program starts
 randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
 
 # -------------------------------------------
@@ -88,18 +97,21 @@ randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in rang
 while True:
     try:
         print()
+        # Display the 5 random countries to the user
         print(f"Your random countries are 1:{randomCountries[0]}, 2:{randomCountries[1]}, 3:{randomCountries[2]}, 4:{randomCountries[3]}, 5:{randomCountries[4]}")
         countryChoice = input("Which country would you like more information about? (#, new, info, weather, done): ")
 
+        # Generate a new list of 5 countries
         if countryChoice.lower() == "new":
             randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
             continue
 
+        # Exit the program
         elif countryChoice.lower() == "done":
             print("\nThank you for using this program.")
             sys.exit()
 
-        # NEW OPTION: show weather for all 5 countries
+        # WEATHER OPTION – gets weather for all 5 displayed countries
         elif countryChoice.lower() == "weather":
             print("\nGetting 30-day average temperatures...\n")
             for c in randomCountries:
@@ -112,17 +124,20 @@ while True:
             print()
             continue
 
-        # USER SELECTED ONE OF THE 5 COUNTRIES
+        # USER PICKED 1–5
         else:
             while True:
+                # Convert number to the country name
                 countryChoice = randomCountries[int(countryChoice) - 1]
+
+                # Display detailed information about the chosen country
                 print()
                 print(f"The country you chose is {countryChoice}.")
                 print(f"Capital: {myDict['countries'][countryChoice]['capital']}")
                 print(f"Currency: {myDict['countries'][countryChoice]['currency']}")
                 print(f"Vacation Tip: {myDict['countries'][countryChoice]['vacation']}")
 
-                # WEATHER FOR SELECTED COUNTRY
+                # Show 30-day average weather for the selected country
                 lat, lon = get_coordinates(countryChoice)
                 if lat:
                     temp = get_average_temperature(lat, lon)
@@ -131,14 +146,18 @@ while True:
                     print("Weather data not available.")
 
                 print()
+
+                # Ask user what to do next
                 countryChoice = input("Pick another (#), new list (new), weather for all (weather), or done: ")
 
                 if countryChoice.lower() == "done":
                     print("\nThank you for using this program.")
                     sys.exit()
+
                 elif countryChoice.lower() == "new":
                     randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
                     break
+
                 elif countryChoice.lower() == "weather":
                     for c in randomCountries:
                         lat, lon = get_coordinates(c)
@@ -148,8 +167,11 @@ while True:
                         avg = get_average_temperature(lat, lon)
                         print(f"{c}: {avg}°F")
                     continue
+
+                # Valid number 1–5
                 elif int(countryChoice) in range(1,6):
                     continue
+
                 else:
                     continue
 
