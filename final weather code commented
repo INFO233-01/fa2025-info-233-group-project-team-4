@@ -1,0 +1,605 @@
+#!/usr/bin/env python3     # Allows this script to run as an executable on Unix systems
+# -*- coding: utf-8 -*-    # Specifies UTF-8 encoding to support special characters
+"""
+Full Program: Currency Converter + Vacation Ideas + Weather Info + 30-Day Average + Climate
+This program provides:
+- Currency conversion using RapidAPI
+- Random vacation destination ideas
+- Weather information using OpenWeather
+- 30-day average climate information using Open-Meteo
+- Climate classification
+"""
+
+# -------------------- IMPORTS --------------------
+
+import random                # Used for selecting random countries
+import requests              # Used for making web API requests
+import sys                   # Used to exit the program
+from datetime import datetime, timedelta   # Used to calculate the last 30 days for climate data
+
+# -------------------- API KEYS --------------------
+
+OPENWEATHER_KEY = ""   # User must insert their OpenWeather API key for weather info
+RAPIDAPI_KEY = ""      # User must insert their RapidAPI key for currency conversion API
+
+# -------------------- CURRENCY LIST --------------------
+# Dictionary containing valid currency codes mapped to full names.
+# Used for currency validation, display, and conversion.
+
+currency_list = { 
+    'USD':"US Dollar", 
+    'ARS':"Argentine Peso",
+    'BBD':"Barbados Dollar",
+    'BSD':"Bahamian Dollar",
+    'PYG':"Paraguat Guarani",
+    'PAB':"Panamanian Balboa",
+    'BRL':"Brazilian Real",
+    "BMD": "Bermudian Dollar",
+    "BOB": "Bolivian Boliviano",
+    "BZD": "Belize Dollar",
+    "XCD": "East Caribbean Dollar",
+    "DOP": "Dominican Peso",
+    "COP": "Colombian Peso",
+    "CRC": "Costa Rican Colon",
+    "CUP": "Cuban Peso",
+    "HTG": "Haitian Gourde",
+    "ANG": "Netherlands Antillian Guilder",
+    "HNL": "Honduran Lempira",
+    "CAD": "Canadian Dollar",
+    "KYD": "Cayman Islands Dollar",
+    "PEN": "Peruvian Sol",
+    "MXN": "Mexican Peso",
+    "NIO": "Nicaraguan Cordoba Oro",
+    "TTD": "Trinidad and Tobago Dollar",
+    "GTQ": "Guatemalan Quetzal",
+    "VES": "Venezuelan Bolivar",
+    "UYU": "Uruguay Peso",
+    "JMD": "Jamaican Dollar",
+    "CLP": "Chilean Peso",
+    "AUD": "Australian Dollar",
+    "MOP": "Macau Pataca",
+    "PKR": "Pakistan Rupee",
+    "PHP": "Philippine Peso",
+    "FJD": "Fiji Dollar",
+    "HKD": "Hong Kong Dollar",
+    "KRW": "Korean Won",
+    "KHR": "Cambodian Riel",
+    "LAK": "Lao Kip",
+    "MYR": "Malaysian Ringgit",
+    "BDT": "Bangladeshi Taka",
+    "MMK": "Myanmar Kyat",
+    "NPR": "Nepalese Rupee",
+    "CNY": "Chinese Yuan Renminbi",
+    "JPY": "Japanese Yen",
+    "SCR": "Seychelles Rupee",
+    "LKR": "Sri Lanka Rupee",
+    "XPF": "CFP Franc",
+    "THB": "Thai Baht",
+    "BND": "Brunei Dollar",
+    "SGD": "Singapore Dollar",
+    "TWD": "Taiwan Dollar",
+    "NZD": "New Zealand Dollar",
+    "INR": "Indian Rupee",
+    "IDR": "Indonesian Rupiah",
+    "VND": "Vietnamese Dong",
+    "ALL": "Albanian Lek",
+    "BYN": "Belarusian Ruble",
+    "BGN": "Bulgarian Lev",
+    "ISK": "Iceland Krona",
+    "PLN": "Polish Zloty",
+    "DKK": "Danish Krone",
+    "RUB": "Russian Ruble",
+    "CZK": "Czech Koruna",
+    "HRK": "Croatian Kuna",
+    "RON": "Romanian Leu",
+    "MKD": "Macedonia Denar",
+    "MDL": "Moldovan Leu",
+    "NOK": "Norwegian Krone",
+    "EUR": "Euro",
+    "SEK": "Swedish Krona",
+    "CHF": "Swiss Franc",
+    "RSD": "Serbian Dinar",
+    "UAH": "Ukraine Hryvnia",
+    "HUF": "Hungarian Forint",
+    "GBP": "British Pound",
+    "AED": "United Arab Emirates Dirham",
+    "OMR": "Omani Rial",
+    "AZN": "Azerbaijani Manat",
+    "BHD": "Bahraini Dinar",
+    "GEL": "Georgian Lari",
+    "KZT": "Kazakhstan Tenge",
+    "KGS": "Kyrgyzstani Som",
+    "QAR": "Qatari Rial",
+    "KWD": "Kuwaiti Dinar",
+    "LBP": "Lebanese Pound",
+    "SAR": "Saudi Riyal",
+    "TRY": "Turkish Lira",
+    "TMT": "Turkmenistan Manat",
+    "UZS": "Uzbekistan Som",
+    "AMD": "Armenian Dram",
+    "YER": "Yemeni Rial",
+    "IQD": "Iraqi Dinar",
+    "IRR": "Iranian Rial",
+    "ILS": "Israeli New Shekel",
+    "JOD": "Jordanian Dinar",
+    "DZD": "Algerian Dinar",
+    "EGP": "Egyptian Pound",
+    "ETB": "Ethiopian Birr",
+    "AOA": "Angolan Kwanza",
+    "BWP": "Botswana Pula",
+    "BIF": "Burundi Franc",
+    "XOF": "CFA BCEAO Franc",
+    "CVE": "Cape Verde Escudo",
+    "GMD": "Gambian Dalasi",
+    "DJF": "Djibouti Franc",
+    "GNF": "Guinea Franc",
+    "GHS": "Ghanaian Cedi",
+    "KES": "Kenyan Shilling",
+    "LSL": "Lesotho Loti",
+    "LYD": "Libyan Dinar",
+    "RWF": "Rwanda Franc",
+    "MWK": "Malawi Kwacha",
+    "MUR": "Mauritius Rupee",
+    "MAD": "Moroccan Dirham",
+    "NAD": "Namibian Dollar",
+    "ZAR": "South African Rand",
+    "NGN": "Nigerian Naira",
+    "SZL": "Swaziland Lilangeni",
+    "SDG": "Sudanese Pound",
+    "SOS": "Somali Shilling",
+    "TZS": "Tanzanian Shilling",
+    "TND": "Tunisian Dinar",
+    "UGX": "Uganda Shilling",
+    "ZMW": "Zambian Kwacha",
+    "XAF": "CFA BEAC Franc",
+    "BAM": "Bosnia and Herzegovina Marka",
+    "SYP": "Syrian Pound"
+}
+
+# -------------------- COUNTRY DATABASE --------------------
+# Each country contains:
+# - Capital city
+# - Currency with code
+# - A vacation recommendation
+# - Geographic coordinates needed for weather/climate APIs
+
+myDict = {
+    "countries": {
+        "Argentina": {
+            "capital": "Buenos Aires",
+            "currency": "Argentine Peso (ARS)",
+            "vacation": "Tango in Buenos Aires and explore the stunning landscapes of Patagonia.",
+            "coords": (-34.6037, -58.3816)
+        },
+        "Australia": {
+            "capital": "Canberra",
+            "currency": "Australian Dollar (AUD)",
+            "vacation": "Visit the Great Barrier Reef",
+            "coords": (-25.2744, 133.7751)
+        },
+        "Brazil": {
+            "capital": "Brasília",
+            "currency": "Brazilian Real (BRL)",
+            "vacation": "Visit Rio de Janeiro",
+            "coords": (-14.2350, -51.9253)
+        },
+        "Canada": {
+            "capital": "Ottawa",
+            "currency": "Canadian Dollar (CAD)",
+            "vacation": "Visit Niagara Falls",
+            "coords": (56.1304, -106.3468)
+        },
+        "China": {
+            "capital": "Beijing",
+            "currency": "Chinese Yuan (CNY)",
+            "vacation": "Explore the Great Wall of China and visit the Forbidden City.",
+            "coords": (35.8617, 104.1954)
+        },
+        "Egypt": {
+            "capital": "Cairo",
+            "currency": "Egyptian Pound (EGP)",
+            "vacation": "Discover the ancient pyramids and the temples of Luxor.",
+            "coords": (26.8206, 30.8025)
+        },
+        "France": {
+            "capital": "Paris",
+            "currency": "Euro (EUR)",
+            "vacation": "Visit the Eiffel Tower",
+            "coords": (46.2276, 2.2137)
+        },
+        "Germany": {
+            "capital": "Berlin",
+            "currency": "Euro (EUR)",
+            "vacation": "Visit the Reichstag",
+            "coords": (51.1657, 10.4515)
+        },
+        "Greece": {
+            "capital": "Athens",
+            "currency": "Euro (EUR)",
+            "vacation": "Visit the Acropolis in Athens and relax on the beautiful Greek islands.",
+            "coords": (39.0742, 21.8243)
+        },
+        "India": {
+            "capital": "New Delhi",
+            "currency": "Indian Rupee (INR)",
+            "vacation": "Visit the Taj Mahal",
+            "coords": (20.5937, 78.9629)
+        },
+        "Indonesia": {
+            "capital": "Jakarta",
+            "currency": "Indonesian Rupiah (IDR)",
+            "vacation": "Visit Bali's beaches and temples, explore Sumatra jungles, and see Borobudur.",
+            "coords": (-0.7893, 113.9213)
+        },
+        "Ireland": {
+            "capital": "Dublin",
+            "currency": "Euro (EUR)",
+            "vacation": "Experience the vibrant pub culture and visit historic sites like the Cliffs of Moher.",
+            "coords": (53.4129, -8.2439)
+        },
+        "Italy": {
+            "capital": "Rome",
+            "currency": "Euro (EUR)",
+            "vacation": "Explore historical sites like the Colosseum and taste authentic Italian cuisine.",
+            "coords": (41.8719, 12.5674)
+        },
+        "Japan": {
+            "capital": "Tokyo",
+            "currency": "Japanese Yen (JPY)",
+            "vacation": "Visit Hiroshima and Nagasaki",
+            "coords": (36.2048, 138.2529)
+        },
+        "Jordan": {
+            "capital": "Amman",
+            "currency": "Jordanian Dinar (JOD)",
+            "vacation": "Visit Petra and explore Wadi Rum.",
+            "coords": (30.5852, 36.2384)
+        },
+        "Kenya": {
+            "capital": "Nairobi",
+            "currency": "Kenyan Shilling (KES)",
+            "vacation": "Go on a safari in the Maasai Mara and visit the Great Rift Valley.",
+            "coords": (-0.0236, 37.9062)
+        },
+        "Kuwait": {
+            "capital": "Kuwait City",
+            "currency": "Kuwaiti Dinar (KWD)",
+            "vacation": "Visit the Kuwait Towers and explore modern architecture.",
+            "coords": (29.3759, 47.9774)
+        },
+        "Malaysia": {
+            "capital": "Kuala Lumpur",
+            "currency": "Malaysian Ringgit (MYR)",
+            "vacation": "Explore street food, Petronas Twin Towers, and Langkawi beaches.",
+            "coords": (4.2105, 101.9758)
+        },
+        "Maldives": {
+            "capital": "Malé",
+            "currency": "Maldivian Rufiyaa (MVR)",
+            "vacation": "Relax on white-sand beaches, snorkel, and stay in overwater bungalows.",
+            "coords": (3.2028, 73.2207)
+        },
+        "Mexico": {
+            "capital": "Mexico City",
+            "currency": "Mexican Peso (MXN)",
+            "vacation": "Enjoy Cancún beaches and explore Mayan ruins.",
+            "coords": (23.6345, -102.5528)
+        },
+        "Morocco": {
+            "capital": "Rabat",
+            "currency": "Moroccan Dirham (MAD)",
+            "vacation": "Visit Marrakech medinas and explore the Sahara Desert.",
+            "coords": (31.7917, -7.0926)
+        },
+        "Netherlands": {
+            "capital": "Amsterdam",
+            "currency": "Euro (EUR)",
+            "vacation": "See the tulips bloom in April–May.",
+            "coords": (52.1326, 5.2913)
+        },
+        "New Zealand": {
+            "capital": "Wellington",
+            "currency": "New Zealand Dollar (NZD)",
+            "vacation": "Visit Milford Sound and hike Southern Alps.",
+            "coords": (-40.9006, 174.8860)
+        },
+        "Oman": {
+            "capital": "Muscat",
+            "currency": "Omani Rial (OMR)",
+            "vacation": "Visit Sultan Qaboos Grand Mosque and Wadi Shab.",
+            "coords": (21.5126, 55.9233)
+        },
+        "Peru": {
+            "capital": "Lima",
+            "currency": "Peruvian Nuevo Sol (PEN)",
+            "vacation": "Visit Machu Picchu and explore the Amazon.",
+            "coords": (-9.1899, -75.0152)
+        },
+        "Philippines": {
+            "capital": "Manila",
+            "currency": "Philippine Peso (PHP)",
+            "vacation": "Enjoy Palawan beaches, Chocolate Hills, and Intramuros.",
+            "coords": (12.8797, 121.7740)
+        },
+        "Qatar": {
+            "capital": "Doha",
+            "currency": "Qatari Riyal (QAR)",
+            "vacation": "Explore Doha skyline and Museum of Islamic Art.",
+            "coords": (25.3548, 51.1839)
+        },
+        "Saudi Arabia": {
+            "capital": "Riyadh",
+            "currency": "Saudi Riyal (SAR)",
+            "vacation": "Explore historical sites and desert landscapes.",
+            "coords": (23.8859, 45.0792)
+        },
+        "Singapore": {
+            "capital": "Singapore",
+            "currency": "Singapore Dollar (SGD)",
+            "vacation": "Explore parks and gardens.",
+            "coords": (1.3521, 103.8198)
+        },
+        "South Africa": {
+            "capital": "Pretoria (Admin), Bloemfontein (Judicial), Cape Town (Legislative)",
+            "currency": "South African Rand (ZAR)",
+            "vacation": "Safari in Kruger National Park and visit Table Mountain.",
+            "coords": (-30.5595, 22.9375)
+        },
+        "South Korea": {
+            "capital": "Seoul",
+            "currency": "South Korean Won (KRW)",
+            "vacation": "Explore Seoul palaces, markets, and the DMZ.",
+            "coords": (35.9078, 127.7669)
+        },
+        "Spain": {
+            "capital": "Madrid",
+            "currency": "Euro (EUR)",
+            "vacation": "Visit Barcelona and Costa del Sol beaches.",
+            "coords": (40.4637, -3.7492)
+        },
+        "Sweden": {
+            "capital": "Stockholm",
+            "currency": "Swedish Krona (SEK)",
+            "vacation": "Explore Stockholm archipelago and Northern Lights in Lapland.",
+            "coords": (60.1282, 18.6435)
+        },
+        "Switzerland": {
+            "capital": "Bern",
+            "currency": "Swiss Franc (CHF)",
+            "vacation": "Visit the Swiss Alps and cities like Zurich and Lucerne.",
+            "coords": (46.8182, 8.2275)
+        },
+        "Syria": {
+            "capital": "Damascus",
+            "currency": "Syrian Pound (SYP)",
+            "vacation": "Explore the Old City of Damascus and Palmyra ruins.",
+            "coords": (34.8021, 38.9968)
+        },
+        "Thailand": {
+            "capital": "Bangkok",
+            "currency": "Thai Baht (THB)",
+            "vacation": "Enjoy street food culture and Chiang Mai temples.",
+            "coords": (15.8700, 100.9925)
+        },
+        "Tunisia": {
+            "capital": "Tunis",
+            "currency": "Tunisian Dinar (TND)",
+            "vacation": "Visit Carthage historic sites and Mediterranean beaches.",
+            "coords": (33.8869, 9.5375)
+        },
+        "Turkey": {
+            "capital": "Ankara",
+            "currency": "Turkish Lira (TRY)",
+            "vacation": "Visit Istanbul and Cappadocia.",
+            "coords": (38.9637, 35.2433)
+        },
+        "United Arab Emirates": {
+            "capital": "Abu Dhabi",
+            "currency": "UAE Dirham (AED)",
+            "vacation": "Luxury shopping in Dubai and Sheikh Zayed Grand Mosque.",
+            "coords": (23.4241, 53.8478)
+        },
+        "United Kingdom": {
+            "capital": "London",
+            "currency": "Pound Sterling (GBP)",
+            "vacation": "Visit Stonehenge.",
+            "coords": (55.3781, -3.4360)
+        },
+        "United States": {
+            "capital": "Washington, D.C.",
+            "currency": "United States Dollar (USD)",
+            "vacation": "Visit the Grand Canyon.",
+            "coords": (39.8283, -98.5795)
+        }
+    }
+}
+
+# -------------------- HELPER FUNCTION: YES/NO --------------------
+
+def get_yes_no(prompt):
+    """Asks user for a yes/no answer until they enter a valid response."""
+    while True:
+        answer = input(prompt).strip().lower()  # Normalize input
+        if answer in ("yes", "no"):
+            return answer                       # Valid response
+        print("Invalid input. Please try again ")  # Invalid input message
+
+# -------------------- HELPER FUNCTION: VALID CURRENCY --------------------
+
+def get_valid_currency(prompt):
+    """Asks user for a valid currency code. Confirms before returning."""
+    while True:
+        curr = input(prompt).strip().upper()     # Get currency code in uppercase
+        if curr not in currency_list:            # Validate against dictionary
+            print("Currency not valid try again.\n")
+            continue
+
+        # Ask user to confirm selection
+        confirm = get_yes_no(f"You selected {curr} ({currency_list[curr]}). Is that correct? : ")
+        print("")
+        if confirm == "yes":
+            return curr  # Valid and confirmed
+
+# -------------------- HELPER FUNCTION: VALID AMOUNT --------------------
+
+def get_valid_amount(prompt):
+    """Asks user for a numeric amount. Confirms value before returning."""
+    while True:
+        try:
+            amt = float(input(prompt))  # Convert string to float
+        except ValueError:
+            print("Please enter a valid number.\n")
+            continue
+
+        confirm = get_yes_no(f"You entered {amt}. Is that correct?: ")
+        if confirm == "yes":
+            return amt  # Valid numeric amount
+        print("Let's try again.\n")
+
+# -------------------- CLIMATE CLASSIFICATION --------------------
+
+def classify_climate(avg_temp_f):
+    """Returns climate category based on average temperature."""
+    if avg_temp_f < 32:
+        return "Freezing / Cold"
+    elif 32 <= avg_temp_f <= 50:
+        return "Cold / Cool"
+    elif 51 <= avg_temp_f <= 68:
+        return "Mild / Temperate"
+    elif 69 <= avg_temp_f <= 85:
+        return "Warm"
+    else:
+        return "Hot / Tropical"
+
+# -------------------- WEATHER FUNCTION --------------------
+
+def check_weather(random_countries):
+    """Checks weather + 30-day climate + USD exchange rate for each country."""
+    for country in random_countries:
+        data = myDict["countries"][country]     # Retrieve country data
+        capital = data["capital"]               # Get capital name
+        lat, lon = data["coords"]               # Coordinates for API
+
+        # ------- CURRENT WEATHER USING OPENWEATHER -------
+        ow_url = (
+            f"http://api.openweathermap.org/data/2.5/weather?"
+            f"lat={lat}&lon={lon}&appid={OPENWEATHER_KEY}&units=imperial"
+        )
+
+        ow_resp = requests.get(ow_url)          # Send request to OpenWeather API
+
+        if ow_resp.status_code == 200:
+            ow_data = ow_resp.json()            # Parse JSON data
+            temp_f = ow_data["main"]["temp"]    # Extract temperature
+            desc = ow_data["weather"][0]["description"].title()  # Format description
+            print(f"\n{country} (Capital: {capital}) Current Weather: {temp_f}°F, {desc}")
+        else:
+            print(f"Weather info unavailable for {country}")
+
+        # ------- 30-DAY AVERAGE TEMPERATURE USING OPEN-METEO -------
+        end_date = datetime.utcnow().date()     # Today's date (UTC)
+        start_date = end_date - timedelta(days=30)  # 30 days earlier
+
+        om_url = (
+            f"https://archive-api.open-meteo.com/v1/archive?"
+            f"latitude={lat}&longitude={lon}&start_date={start_date}&end_date={end_date}"
+            f"&daily=temperature_2m_max,temperature_2m_min&timezone=auto"
+        )
+
+        om_resp = requests.get(om_url)
+
+        if om_resp.status_code == 200:
+            om_data = om_resp.json()
+
+            max_temps = om_data["daily"]["temperature_2m_max"]  # Daily max temps
+            min_temps = om_data["daily"]["temperature_2m_min"]  # Daily min temps
+
+            avg_temp_c = sum(max_temps + min_temps) / (2 * len(max_temps))  # Avg in °C
+            avg_temp_f = avg_temp_c * 9/5 + 32  # Convert to °F
+
+            climate = classify_climate(avg_temp_f)
+
+            print(f"30-Day Average Temperature: {avg_temp_f:.1f}°F ({climate})")
+        else:
+            print("30-day average temperature unavailable.")
+
+        # ------- CURRENCY RATE (USD → COUNTRY CURRENCY) -------
+        currency_code = data["currency"].split("(")[-1].replace(")", "").strip()
+
+        if currency_code in currency_list:        # Validate currency code
+            url2 = "https://exchange-rates7.p.rapidapi.com/convert"
+
+            headers2 = {
+                "x-rapidapi-key": RAPIDAPI_KEY,              # Required header
+                "x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
+            }
+
+            q = {"base": "USD", "target": currency_code, "amount": 1}  # Ask for USD rate
+            r = requests.get(url2, headers=headers2, params=q)
+
+            if r.status_code == 200:
+                r_json = r.json()
+                rate2 = float(r_json["convert_result"]["rate"])  # Parse rate
+                print(f"1 USD = {rate2} {currency_code}")
+
+# -------------------- MAIN MENU LOOP --------------------
+
+while True:   # Loop until user chooses Quit
+    print("\nWelcome to the Currency, Vacation & Weather Program!\n")
+    print("1.) Convert Currency")
+    print("2.) Find an interesting vacation spot")
+    print("3.) Check Climate/Weather for random countries")
+    print("4.) Quit\n")
+
+    choice = input("Please select an option: ").strip()
+
+    # Option 4: Quit
+    if choice == "4":
+        print("Thank you for using the program. Goodbye!")
+        sys.exit()   # Exit entire program
+
+    # Option 1: Currency Conversion
+    elif choice == "1":
+        base = get_valid_currency("Enter your native currency (EX: USD, CAD, EUR): ")
+        target = get_valid_currency("Enter the currency you want to convert to: ")
+        amount = get_valid_amount(f"How much {base} would you like to convert to {target}?: ")
+
+        url = "https://exchange-rates7.p.rapidapi.com/convert"
+
+        headers = {
+            "x-rapidapi-key": RAPIDAPI_KEY,            # RapidAPI authentication
+            "x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
+        }
+
+        params = {"base": base, "target": target, "amount": amount}
+
+        resp = requests.get(url, headers=headers, params=params)
+        data = resp.json()
+
+        rate = float(data["convert_result"]["rate"])   # Extract conversion rate
+        converted = amount * rate                      # Calculate converted amount
+
+        print("\n-------------------------------------------------------")
+        print(f"Base Currency:   {base} ({currency_list[base]})")
+        print(f"Target Currency: {target} ({currency_list[target]})")
+        print(f"Conversion Rate: {rate}")
+        print(f"{amount} {base} = {converted:.2f} {target}")
+        print("-------------------------------------------------------\n")
+
+    # Option 2: Random Vacation Picks
+    elif choice == "2":
+        # Select 5 random countries
+        randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
+        print("\nYour random vacation countries:")
+
+        for i, c in enumerate(randomCountries, 1):
+            print(f"{i}. {c} — {myDict['countries'][c]['vacation']}")
+
+    # Option 3: Weather & Climate Info
+    elif choice == "3":
+        randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
+        check_weather(randomCountries)
+
+    # Invalid option handling
+    else:
+        print("Invalid option. Please select 1–4.")
