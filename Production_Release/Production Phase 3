@@ -3,7 +3,7 @@
 """
 Created on Wed Nov 26 20:56:31 2025
 
-@author: ChristopherMontesdeoca
+@author: christophermontesdeoca
 """
 
 #!/usr/bin/env python3
@@ -22,7 +22,7 @@ import requests
 import sys
 from datetime import datetime, timedelta
 
-OPENWEATHER_KEY = ""#dont forget ur api key PLZZ
+OPENWEATHER_KEY = "3692d97eb3e7e3852085653a544b72fa"
 currency_list = { 
     'USD':"US Dollar", 
     'ARS':"Argentine Peso",
@@ -309,20 +309,20 @@ while True:
             w = requests.get(weather_url).json()
             if "main" in w:
                 temp = w["main"]["temp"]
-                desc = w["weather"][0]["description"] 
+                desc = w["weather"][0]["description"]
                 if temp < 10:
                     climate = "cold"
                 elif temp < 25:
                     climate = "warm"
                 else:
                     climate = "hot"
-                print(f"Current Weather in {capital}: {temp}°C, {desc}") #if you guys want i can change this to ferenhite or however you spell it just lmk 
+                print(f"Current Weather in {capital}: {temp}°C, {desc}")
                 print(f"This is considered a {climate} country right now.")
-            currency_code = data["currency"].split("(")[-1].replace(")", "").strip() # I was also able to print out the currency conversion from that country from 1 usd to whatever that equals
-            if currency_code in currency_list: 
+            currency_code = data["currency"].split("(")[-1].replace(")", "").strip()
+            if currency_code in currency_list:
                 url2 = "https://exchange-rates7.p.rapidapi.com/convert"
                 headers2 = {
-                    "x-rapidapi-key": "", #guys put ur api key in here i made the mistake of running this and going crazy without it wondering where my other error was
+                    "x-rapidapi-key": "1fbd89b6admsh452592d91c1e41cp1ac476jsn4233e9f07bea",
                     "x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
                 }
                 q = {"base": "USD", "target": currency_code, "amount": 1}
