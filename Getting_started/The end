@@ -206,7 +206,7 @@ def get_yes_no(prompt):  #This makes sure only yes and no are accepted to create
             return answer
         print("Invalid input Please try again ")
 
-def get_valid_currency(prompt): #this makes sure only the currency listede within the list above is entered
+def get_valid_currency(prompt): #this makes sure only the currency listed within the list above is entered
     while True:
         curr = input(prompt).strip().upper()
         if curr not in currency_list:
