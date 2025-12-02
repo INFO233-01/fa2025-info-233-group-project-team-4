@@ -20,7 +20,7 @@ Created on Tue Nov 25 20:04:29 2025
 import random
 import requests
 import sys
-from datetime import datetime, timedelta
+
 
 OPENWEATHER_KEY = "" #OpenWeather Key goes here 
 currency_convertKey = "" #Currency key goes here
@@ -332,3 +332,4 @@ while True: #Main menu
                 r = requests.get(url2, headers=headers2, params=q).json()
                 rate2 = float(r["convert_result"]["rate"])
                 print(f"1 USD = {rate2} {currency_code}")  # Tells the user the currency at the country and the exchange rate from usd to the countries currency
+
