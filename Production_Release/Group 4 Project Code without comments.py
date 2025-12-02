@@ -11,7 +11,7 @@ Created on Wed Nov 26 23:11:06 2025
 import random
 import requests
 import sys
-from datetime import datetime, timedelta
+
 
 OPENWEATHER_KEY = ""
 currency_list = {
@@ -320,3 +320,4 @@ while True:
                 r = requests.get(url2, headers=headers2, params=q).json()
                 rate2 = float(r["convert_result"]["rate"])
                 print(f"1 USD = {rate2} {currency_code}")
+
