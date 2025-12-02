@@ -22,7 +22,7 @@ import requests
 import sys
 from datetime import datetime, timedelta
 
-OPENWEATHER_KEY = "3692d97eb3e7e3852085653a544b72fa" 
+OPENWEATHER_KEY = "" 
 currency_list = {  # List of currencies to assure the user doesnt input anything unwanted
     'USD':"US Dollar", 
     'ARS':"Argentine Peso",
@@ -322,7 +322,7 @@ while True: #Main menu
             if currency_code in currency_list:
                 url2 = "https://exchange-rates7.p.rapidapi.com/convert"
                 headers2 = {
-                    "x-rapidapi-key": "1fbd89b6admsh452592d91c1e41cp1ac476jsn4233e9f07bea",
+                    "x-rapidapi-key": "",
                     "x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
                 }
                 q = {"base": "USD", "target": currency_code, "amount": 1}
