@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 30 14:48:43 2025
-
-@author: johnm
-"""
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -27,9 +20,10 @@ Created on Tue Nov 25 20:04:29 2025
 import random
 import requests
 import sys
+from datetime import datetime, timedelta
 
-
-OPENWEATHER_KEY = "" 
+OPENWEATHER_KEY = "" #OpenWeather Key goes here 
+currency_convertKey = "" #Currency key goes here
 currency_list = {  # List of currencies to assure the user doesnt input anything unwanted
     'USD':"US Dollar", 
     'ARS':"Argentine Peso",
@@ -213,7 +207,7 @@ def get_yes_no(prompt):  #This makes sure only yes and no are accepted to create
             return answer
         print("Invalid input Please try again ")
 
-def get_valid_currency(prompt): #this makes sure only the currency listed within the list above is entered
+def get_valid_currency(prompt): #this makes sure only the currency listede within the list above is entered
     while True:
         curr = input(prompt).strip().upper()
         if curr not in currency_list:
@@ -229,22 +223,22 @@ def get_valid_amount(prompt): #makes sure numbers or floats are entered. i chose
         try:
             amt = float(input(prompt))
         except ValueError:
-            print("Please enter a valid number.\n")
+            print("Please enter a valid number.\n") #anything other then a number will print an error
             continue
-        confirm = get_yes_no(f"You entered {amt}. Is that correct?: ")
+        confirm = get_yes_no(f"You entered {amt}. Is that correct?: ") #verifies the amount typed in 
         if confirm == "yes":
-            return amt
+            return amt #saves the amount the user typed to the function
         print("Let's try again.\n")
 
 while True: #Main menu
-    print("\nWelcome to the Currency Exchange Program!\n")
-    print("1.) Convert Currency")
-    print("2.) Find an interesting vacation spot")
-    print("3.) Quit\n")
+    print("\nWelcome to the Currency Exchange Program!\n") #greetings
+    print("1.) Convert Currency") #This option converts any currency the user selects
+    print("2.) Find an interesting vacation spot") #Prints out some nice vacation spots for the user to select after a user selects a country it will display the country a fact and the conversion rate from 1 usd to that currency 
+    print("3.) Quit\n") #ends the whole program 
 
-    choice = input("Please select an option: ")
+    choice = input("Please select an option: ") #User inputs their choice here if any other number is typed in the program just restarts 
 
-    if choice == "3": #Option 3 ends the program
+    if choice == "3": #Option 3 ends the program   
         print("Thank you for using the Currency Converter. Goodbye!")
         sys.exit() #ths shuts the program with the assistance of the module
         
@@ -256,7 +250,7 @@ while True: #Main menu
         querystring = {"base": base, "target": target, "amount": amount} #This is the meat and potatoes of the API 
         url = "https://exchange-rates7.p.rapidapi.com/convert"
         headers = {
-            "x-rapidapi-key": "", #API key from the website below should be placed here or else this wont work :) 
+            "x-rapidapi-key": "b584caf4bbmshfa91dbc98b0d996p18d32bjsnac2d0472099a", #API key from the website below should be placed here or else this wont work :) 
             "x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
         }
 
@@ -274,30 +268,30 @@ while True: #Main menu
         print("-------------------------------------------------------\n")
         
     elif choice == "2": #this prints out countries and facts about it and the user can choose one of the listed to get facts and the temperature
-        randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
+        randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)] #This gets 5 random countries
         
         while True:
-            print("\nYour random countries are:")
+            print("\nYour random countries are:") #This will print out 5 random countries that the random feature selects and displays them for the user to choose
             for i, country in enumerate(randomCountries, 1):
-                print(f"{i}. {country}")
+                print(f"{i}. {country}") 
 
-            countryChoice = input(
+            countryChoice = input( #This is so the user can input their choice of country out of the 5
                 "\nSelect a country by number or name. "
-                "Type 'new' for a new set of random countries, or 'done' to exit: "
+                "Type 'new' for a new set of random countries, or 'done' to exit: " #If the user is unsatisfied with the 5 offered then it prints out a new set of 5 random countries
             ).strip()
 
-            if countryChoice.lower() == "done":
+            if countryChoice.lower() == "done": #Returns you back to the main menu
                 print("\nThank you for using this program.")
                 break
             elif countryChoice.lower() == "new":
-                randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)]
+                randomCountries = [random.choice(list(myDict["countries"].keys())) for _ in range(5)] # Prints out new 5 countries
                 continue
-            elif countryChoice.isdigit():
+            elif countryChoice.isdigit(): 
                 idx = int(countryChoice) - 1
                 if 0 <= idx < len(randomCountries):
                     country = randomCountries[idx]
                 else:
-                    print("Invalid number. Try again.")
+                    print("Invalid number. Try again.") #if any number below 1 or above 5 is typed or a letter it will ask you to try again
                     continue
             elif countryChoice in randomCountries:
                 country = countryChoice
@@ -305,35 +299,36 @@ while True: #Main menu
                 print("Invalid input. Please enter a valid number or country name.")
                 continue  # the code above ensures no errors get past and asks for input to select desired location
 
-            data = myDict["countries"][country]
-            print(f"\nCountry: {country}")
+            data = myDict["countries"][country] 
+            print(f"\nCountry: {country}") #prints out all of the data we need
             print(f"Capital: {data['capital']}")
             print(f"Currency: {data['currency']}")
             print(f"Vacation Idea: {data['vacation']}")  #prints out all the information gathered to the user
 
             capital = data['capital'].strip()
             weather_url = f"https://api.openweathermap.org/data/2.5/weather?q={capital}&appid={OPENWEATHER_KEY}&units=metric"   #more API stuff
+           
             w = requests.get(weather_url).json()
             if "main" in w:
                 temp = w["main"]["temp"]
                 desc = w["weather"][0]["description"]
+                temp2 = (w["main"]["temp"] * 9/5) + 32 
                 if temp < 10:
                     climate = "cold"
                 elif temp < 25:
                     climate = "warm" #tells the user if the country is warm cold or hot
                 else:
-                    climate = "hot"
-                print(f"Current Weather in {capital}: {temp}°C, {desc}")
+                    climate = "hot" 
+                print(f"Current Weather in {capital}: {temp2}°F, {desc}") 
                 print(f"This is considered a {climate} country right now.")
             currency_code = data["currency"].split("(")[-1].replace(")", "").strip()
             if currency_code in currency_list:
                 url2 = "https://exchange-rates7.p.rapidapi.com/convert"
                 headers2 = {
-                    "x-rapidapi-key": "",
+                    "x-rapidapi-key": currency_convertKey,
                     "x-rapidapi-host": "exchange-rates7.p.rapidapi.com"
                 }
                 q = {"base": "USD", "target": currency_code, "amount": 1}
                 r = requests.get(url2, headers=headers2, params=q).json()
                 rate2 = float(r["convert_result"]["rate"])
-
                 print(f"1 USD = {rate2} {currency_code}")  # Tells the user the currency at the country and the exchange rate from usd to the countries currency
